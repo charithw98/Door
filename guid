@@ -1,0 +1,6 @@
+Get-ChildItem "HKLM:\Software\Classes\CLSID" | ForEach-Object {
+    $name = (Get-ItemProperty $_.PSPath).'(default)'
+    if ($name -like "*Biokey*") { # Adjust filter as needed
+        Write-Output "$($_.PSChildName) - $name"
+    }
+}
