@@ -1,0 +1,20 @@
+#include <iostream>
+#include <string>
+#include <zkemkeeper.h> // Ensure you have this header from SDK
+
+using namespace std;
+
+int main() {
+    CZKEMClass zkem;
+    bool isConnected = zkem.Connect_Net("10.101.13.100", 4370); 
+
+    if (isConnected) {
+        cout << "Connected successfully!" << endl;
+        // You can add more code here to interact with the device
+    } else {
+        cout << "Failed to connect." << endl;
+    }
+
+    zkem.Disconnect(); // Always disconnect when done
+    return 0;
+}
