@@ -1,3 +1,1 @@
-https://www.mutaz.pro/free-programs/en/download/?1543
-
-https://brameg.org/?url=MTU0Mw==
+https://drive.google.com/file/d/1_SXvq-jcJ2X0etyysevx1Ncaua1dXMu6/view?pli=1
