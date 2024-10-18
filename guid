@@ -1,6 +1,15 @@
-Get-ChildItem "HKLM:\Software\Classes\CLSID" | ForEach-Object {
-    $name = (Get-ItemProperty $_.PSPath).'(default)'
-    if ($name -like "*Biokey*") { # Adjust filter as needed
-        Write-Output "$($_.PSChildName) - $name"
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch ZKFPDemo",
+      "request": "launch",
+      "mainClass": "com.zkteco.biometric.ZKFPDemo",
+      "classPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/lib/ZKFingerReader.jar"
+      ]
     }
+  ]
 }
