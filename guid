@@ -1,15 +1,21 @@
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "java",
-      "name": "Launch ZKFPDemo",
-      "request": "launch",
-      "mainClass": "com.zkteco.biometric.ZKFPDemo",
-      "classPaths": [
-        "${workspaceFolder}/src",
-        "${workspaceFolder}/lib/ZKFingerReader.jar"
-      ]
+import java.lang.reflect.Method;
+
+public class ListMethods {
+
+    public static void main(String[] args) {
+        try {
+            // Load the FingerprintSensorEx class from ZKFingerReader.jar
+            Class<?> clazz = Class.forName("com.zkteco.biometric.FingerprintSensorEx");
+
+            // Get all the methods in the class
+            Method[] methods = clazz.getDeclaredMethods();
+
+            // Print each method
+            for (Method method : methods) {
+                System.out.println("Method: " + method.getName());
+            }
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found: " + e.getMessage());
+        }
     }
-  ]
 }
