@@ -1,72 +1,63 @@
 import com.zkteco.biometric.FingerprintSensorEx;
 
-public class ZKTLogRetriever {
+public class ZKFPDemo {
+
     private long deviceHandle = 0;
+    private String deviceIP = "10.101.13.100";  // Replace with the actual IP of your device
+    private int port = 4370;                    // Default ZKTeco port
 
-    // Method to connect to device using IP address and port number (default 4370)
-    public boolean connectDevice(String deviceIP, int port) {
+    public void connectDevice() {
         try {
-            deviceHandle = FingerprintSensorEx.OpenDeviceEx(deviceIP, port);  // Hypothetical connection method
-            if (deviceHandle != 0) {
-                System.out.println("Successfully connected to device: " + deviceIP);
-                return true;
-            } else {
-                System.out.println("Failed to connect to device.");
-                return false;
-            }
-        } catch (Exception e) {
-            System.out.println("Error while trying to connect to device.");
-            e.printStackTrace();
-            return false;
-        }
-    }
+            System.out.println("Connecting to device at IP: " + deviceIP);
 
-    // Method to retrieve logs from the device
-    public void retrieveLogs() {
-        try {
+            // Open the device connection
+            deviceHandle = FingerprintSensorEx.OpenDeviceEx(deviceIP, port);
+
             if (deviceHandle != 0) {
-                byte[] logBuffer = new byte[2048];  // Hypothetical buffer for log data
-                int[] logLength = new int[1];  // Length of the log data retrieved
-                int ret = FingerprintSensorEx.GetLogData(deviceHandle, logBuffer, logLength);  // Hypothetical method
-                if (ret == 0 && logLength[0] > 0) {
-                    String logData = new String(logBuffer, 0, logLength[0]);
-                    System.out.println("Logs retrieved successfully: " + logData);
-                } else {
-                    System.out.println("No logs available or failed to retrieve logs.");
-                }
+                System.out.println("Successfully connected to device at IP: " + deviceIP);
+
+                // Call the method to get logs after successful connection
+                getLogs();
             } else {
-                System.out.println("Device is not connected.");
+                System.out.println("Failed to connect to the device.");
             }
+
         } catch (Exception e) {
-            System.out.println("Error while retrieving logs.");
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Method to disconnect from the device
-    public void disconnectDevice() {
+    public void getLogs() {
         try {
-            if (deviceHandle != 0) {
-                FingerprintSensorEx.CloseDeviceEx(deviceHandle);  // Hypothetical method for closing connection
-                System.out.println("Disconnected from device.");
+            System.out.println("Retrieving logs...");
+
+            byte[] buffer = new byte[1024];  // Adjust buffer size as needed
+            int logLen = buffer.length;
+            int ret = FingerprintSensorEx.GetLogData(deviceHandle, buffer, logLen);
+
+            if (ret == 0) {
+                System.out.println("Logs retrieved successfully.");
+
+                // Convert the byte buffer to a string for demonstration
+                String logs = new String(buffer, "UTF-8");
+                System.out.println("Logs: " + logs);
+            } else {
+                System.out.println("Failed to retrieve logs. Error code: " + ret);
             }
+
         } catch (Exception e) {
-            System.out.println("Error while disconnecting from the device.");
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            // Close the device connection after retrieving logs
+            FingerprintSensorEx.CloseDeviceEx(deviceHandle);
+            System.out.println("Device connection closed.");
         }
     }
 
     public static void main(String[] args) {
-        ZKTLogRetriever logRetriever = new ZKTLogRetriever();
-
-        // IP and Port of your ZKTeco device (set to actual values)
-        String deviceIP = "10.101.13.100";
-        int port = 4370;
-
-        // Connect to the device and retrieve logs
-        if (logRetriever.connectDevice(deviceIP, port)) {
-            logRetriever.retrieveLogs();  // Attempt to retrieve logs
-            logRetriever.disconnectDevice();  // Disconnect after retrieving logs
-        }
+        ZKFPDemo demo = new ZKFPDemo();
+        demo.connectDevice();
     }
 }
