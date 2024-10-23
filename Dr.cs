@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using PullSDK_core;  // Assuming this is the namespace for the wrapper you downloaded
+using PullSDK_core;  // Ensure this is the correct namespace
 
 class ZKTecoDeviceConnection
 {
@@ -8,7 +8,7 @@ class ZKTecoDeviceConnection
     {
         string deviceIp = "10.101.13.100";  // Your device's IP address
         int port = 4370;  // The default port for ZKTeco devices
-        int password = 123456;  // Device password, if any. Replace with the actual password
+        int password = 123456;  // Device password
         int timeout = 5000;  // Connection timeout in milliseconds
 
         // Create an instance of the device class
@@ -23,7 +23,7 @@ class ZKTecoDeviceConnection
 
         Console.WriteLine($"Successfully connected to the device at {deviceIp}:{port}.");
 
-        // Example: Read users from the device
+        // Read users from the device
         List<User> users = device.ReadUsers();
         if (users == null)
         {
@@ -33,7 +33,7 @@ class ZKTecoDeviceConnection
 
         Console.WriteLine($"Successfully read {users.Count} users from the device.");
 
-        // Example: Open door 1 for 5 seconds
+        // Open door 1 for 5 seconds (for access control systems)
         if (!device.OpenDoor(1, 5))
         {
             Console.WriteLine("Failed to open door.");
