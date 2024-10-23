@@ -1,63 +1,49 @@
-import com.zkteco.biometric.FingerprintSensorEx;
+using System;
+using System.Collections.Generic;
+using PullSDK_core;  // Assuming this is the namespace for the wrapper you downloaded
 
-public class ZKFPDemo {
+class ZKTecoDeviceConnection
+{
+    static void Main(string[] args)
+    {
+        string deviceIp = "10.101.13.100";  // Your device's IP address
+        int port = 4370;  // The default port for ZKTeco devices
+        int password = 123456;  // Device password, if any. Replace with the actual password
+        int timeout = 5000;  // Connection timeout in milliseconds
 
-    private long deviceHandle = 0;
-    private String deviceIP = "10.101.13.100";  // Replace with the actual IP of your device
-    private int port = 4370;                    // Default ZKTeco port
+        // Create an instance of the device class
+        AccessPanel device = new AccessPanel();
 
-    public void connectDevice() {
-        try {
-            System.out.println("Connecting to device at IP: " + deviceIP);
-
-            // Open the device connection
-            deviceHandle = FingerprintSensorEx.OpenDeviceEx(deviceIP, port);
-
-            if (deviceHandle != 0) {
-                System.out.println("Successfully connected to device at IP: " + deviceIP);
-
-                // Call the method to get logs after successful connection
-                getLogs();
-            } else {
-                System.out.println("Failed to connect to the device.");
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
+        // Attempt to connect to the device
+        if (!device.Connect(deviceIp, port, password, timeout))
+        {
+            Console.WriteLine($"Failed to connect to the device at {deviceIp}:{port}.");
+            return;
         }
-    }
 
-    public void getLogs() {
-        try {
-            System.out.println("Retrieving logs...");
+        Console.WriteLine($"Successfully connected to the device at {deviceIp}:{port}.");
 
-            byte[] buffer = new byte[1024];  // Adjust buffer size as needed
-            int logLen = buffer.length;
-            int ret = FingerprintSensorEx.GetLogData(deviceHandle, buffer, logLen);
-
-            if (ret == 0) {
-                System.out.println("Logs retrieved successfully.");
-
-                // Convert the byte buffer to a string for demonstration
-                String logs = new String(buffer, "UTF-8");
-                System.out.println("Logs: " + logs);
-            } else {
-                System.out.println("Failed to retrieve logs. Error code: " + ret);
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // Close the device connection after retrieving logs
-            FingerprintSensorEx.CloseDeviceEx(deviceHandle);
-            System.out.println("Device connection closed.");
+        // Example: Read users from the device
+        List<User> users = device.ReadUsers();
+        if (users == null)
+        {
+            Console.WriteLine("Failed to read users from the device.");
+            return;
         }
-    }
 
-    public static void main(String[] args) {
-        ZKFPDemo demo = new ZKFPDemo();
-        demo.connectDevice();
+        Console.WriteLine($"Successfully read {users.Count} users from the device.");
+
+        // Example: Open door 1 for 5 seconds
+        if (!device.OpenDoor(1, 5))
+        {
+            Console.WriteLine("Failed to open door.");
+            return;
+        }
+
+        Console.WriteLine("Door opened successfully.");
+
+        // After operations, disconnect from the device
+        device.Disconnect();
+        Console.WriteLine("Disconnected from the device.");
     }
 }
